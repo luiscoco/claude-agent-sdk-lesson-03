@@ -4,7 +4,7 @@ A hands-on companion to **Claude Agent SDK TypeScript version 0.3.310**, by Luis
 
 Keep one query handle, observe its stream, inspect and change the runtime, and close its resources deliberately. This sample follows **Lesson 3: Query Handles and Runtime Methods** and builds on [Lesson 1](https://github.com/luiscoco/claude-agent-sdk-lesson-01) and [Lesson 2](https://github.com/luiscoco/claude-agent-sdk-lesson-02).
 
-![Query Control Room after inspecting a retained session](docs/query-control-room.png)
+![Refreshed course interface with larger text](docs/visual-refresh-desktop.png)
 
 ## Run the application
 
@@ -153,3 +153,5 @@ Online documentation evolves. The pinned package declarations are this sample's 
 MIT © Luis Coco Enríquez. Independent educational sample; not an official Anthropic product.
 
 The live adapter uses q.initializationResult() to enable input after the control handshake. The first system/init stream event may arrive only after a user turn; it does not reset an already-running turn to ready.
+
+See [visual style and reading controls](docs/visual-style.md) for the refreshed reference palette, larger typography, and persistent text-size setting.
