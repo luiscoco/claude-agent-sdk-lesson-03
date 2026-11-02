@@ -165,7 +165,10 @@ function apply(element: HTMLElement) {
   if (!onlyText && (highlighted.get(element) === text || !highlighted.has(element))) return;
   highlighted.set(element, text);
   const lang = detect(element, text);
-  if (lang) element.replaceChildren(...highlight(text, lang));
+  const parts = lang ? highlight(text, lang) : [];
+  // Only touch the DOM when something gets coloured: rewriting a plain text node would
+  // trigger the observer again and loop forever.
+  if (parts.some((part) => typeof part !== 'string')) element.replaceChildren(...parts);
 }
 
 function scan(root: ParentNode) {
