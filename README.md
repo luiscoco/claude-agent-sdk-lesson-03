@@ -1,4 +1,4 @@
-# Lesson 03 · Query Control Room
+# Lesson 03 Query Control Room
 
 A hands-on companion to **Claude Agent SDK TypeScript version 0.3.310**, by Luis Coco Enríquez.
 
