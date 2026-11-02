@@ -584,6 +584,68 @@ summary {
   overflow-wrap: anywhere;
   white-space: pre-wrap;
 }
+#result.markdown {
+  white-space: normal;
+}
+#result.markdown > :first-child {
+  margin-top: 0;
+}
+#result.markdown > :last-child {
+  margin-bottom: 0;
+}
+#result.markdown p,
+#result.markdown ul,
+#result.markdown ol,
+#result.markdown blockquote,
+#result.markdown pre {
+  margin: 0 0 0.8em;
+}
+#result.markdown :is(h3, h4, h5, h6) {
+  margin: 1.1em 0 0.4em;
+  font-size: 1.05em;
+  line-height: 1.4;
+}
+#result.markdown h3 {
+  font-size: 1.15em;
+}
+#result.markdown :is(ul, ol) {
+  padding-left: 1.4em;
+}
+#result.markdown li + li {
+  margin-top: 0.25em;
+}
+#result.markdown code {
+  font-size: 0.9em;
+  padding: 0.1em 0.35em;
+  border-radius: 4px;
+  background: rgba(0, 126, 137, 0.08);
+}
+#result.markdown pre {
+  padding: 12px 14px;
+  border-radius: 8px;
+  background: rgba(0, 126, 137, 0.06);
+  color: var(--ink);
+  border: 0;
+  overflow-x: auto;
+  white-space: pre;
+}
+#result.markdown pre code {
+  padding: 0;
+  background: none;
+}
+#result.markdown blockquote {
+  padding-left: 12px;
+  border-left: 3px solid var(--teal);
+  color: var(--muted);
+}
+#result.markdown hr {
+  border: 0;
+  border-top: 1px solid rgba(0, 126, 137, 0.2);
+  margin: 1em 0;
+}
+#result.markdown a {
+  color: var(--teal);
+}
 .log-legend {
   display: flex;
   gap: 18px;

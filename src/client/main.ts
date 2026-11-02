@@ -1,12 +1,14 @@
 import './style.css';
 import './course-theme.css';
 import './course-theme.js';
+import { renderMarkdown } from './markdown.js';
 import { QUIZ, type Command, type Metadata, type Snapshot } from '../shared/lesson.js';
 const $ = <T extends HTMLElement = HTMLElement>(id: string) => document.getElementById(id) as T;
 let state: Snapshot | undefined;
 let pending = false;
 let pollPending = false;
 let generation = 0;
+let renderedResult: string | undefined;
 const commandButtons = [...document.querySelectorAll<HTMLButtonElement>('[data-command]')];
 const text = (id: string, value: string) => {
   $(id).textContent = value;
@@ -54,15 +56,20 @@ function render(next: Snapshot) {
   text('messages', String(next.messageCount));
   text('turns', String(next.turnCount));
   text('closes', String(next.closeCount));
-  text(
-    'result',
+  const result =
     next.lastResult ||
-      (next.status === 'running'
-        ? 'Waiting for a turn result…'
-        : next.status === 'closed'
-          ? 'The handle is closed. Create another session to continue.'
-          : 'The retained handle is ready for input.'),
-  );
+    (next.status === 'running'
+      ? 'Waiting for a turn result…'
+      : next.status === 'closed'
+        ? 'The handle is closed. Create another session to continue.'
+        : 'The retained handle is ready for input.');
+  // Re-render only when the text changes so polling doesn't reset a reader's selection.
+  if (result !== renderedResult) {
+    renderedResult = result;
+    if (next.lastResult) renderMarkdown($('result'), result);
+    else text('result', result);
+    $('result').classList.toggle('markdown', Boolean(next.lastResult));
+  }
   text(
     'result-note',
     next.lastTurnOk === false
