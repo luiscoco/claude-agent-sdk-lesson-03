@@ -13,6 +13,7 @@ export type QueryPort = AsyncIterable<SDKMessage> &
   >;
 export interface Runtime {
   handle: QueryPort;
+  ready?: Promise<void>;
   send(prompt: string): void;
   dispose(): Promise<void>;
 }

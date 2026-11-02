@@ -131,7 +131,7 @@ npx playwright install chromium
 npm run test:e2e
 ```
 
-On Linux, use `npx playwright install --with-deps chromium` if needed. GitHub Actions runs Node.js 22/24 checks and Chromium browser tests. The tests exercise multiple turns, cancellation, one-time cleanup, failed controls, held reloads, timeouts, session replacement, HTTP boundaries, responsive layout, and the quiz. The live adapter is tested with injected query handles; verification does not make actual model requests. Live execution requires a learner's own valid key and model access.
+On Linux, use `npx playwright install --with-deps chromium` if needed. GitHub Actions runs Node.js 22/24 checks and Chromium browser tests. The tests exercise multiple turns, cancellation, one-time cleanup, failed controls, held reloads, timeouts, session replacement, HTTP boundaries, responsive layout, and the quiz. Automated tests use injected query handles and do not make model requests. A manual live run with claude-haiku-5-5 also verified initialization, one model turn, MCP attachment/status, agent discovery, and context inspection. Live execution requires a learner's own valid key and model access.
 
 ## Source map
 
@@ -151,3 +151,5 @@ On Linux, use `npx playwright install --with-deps chromium` if needed. GitHub Ac
 Online documentation evolves. The pinned package declarations are this sample's code contract.
 
 MIT © Luis Coco Enríquez. Independent educational sample; not an official Anthropic product.
+
+The live adapter uses q.initializationResult() to enable input after the control handshake. The first system/init stream event may arrive only after a user turn; it does not reset an already-running turn to ready.

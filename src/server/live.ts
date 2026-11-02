@@ -3,13 +3,16 @@ import {
   createSdkMcpServer,
   tool,
   type SDKUserMessage,
+  type Query,
 } from '@anthropic-ai/claude-agent-sdk';
 import { z } from 'zod';
 import { randomUUID } from 'node:crypto';
 import { InputQueue } from './input.js';
 import type { Runtime, QueryPort } from './port.js';
 import { WORKSPACE } from './paths.js';
-export type QueryFactory = (input: Parameters<typeof query>[0]) => QueryPort;
+export type QueryFactory = (
+  input: Parameters<typeof query>[0],
+) => QueryPort & Partial<Pick<Query, 'initializationResult'>>;
 export function createLessonServer() {
   return createSdkMcpServer({
     name: 'lifecycle-notes',
@@ -38,7 +41,7 @@ export function createLessonServer() {
 export function createLiveRuntime(queryFactory: QueryFactory = query): Runtime {
   const input = new InputQueue<SDKUserMessage>();
   const abortController = new AbortController();
-  let handle: QueryPort;
+  let handle: ReturnType<QueryFactory>;
   try {
     // Keep input open. Runtime controls require streaming input/output mode.
     handle = queryFactory({
@@ -73,6 +76,7 @@ export function createLiveRuntime(queryFactory: QueryFactory = query): Runtime {
   let disposed = false;
   return {
     handle,
+    ready: handle.initializationResult?.().then(() => undefined) ?? Promise.resolve(),
     send(prompt) {
       input.push({
         type: 'user',

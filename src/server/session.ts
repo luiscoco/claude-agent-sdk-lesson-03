@@ -52,6 +52,28 @@ export class Session {
         : 'Real SDK query created with an open async input queue.',
     );
     this.consumed = this.consume();
+    if (runtime.ready)
+      void runtime.ready
+        .then(() => {
+          if (!this.finishing && this.state.status === 'starting') {
+            this.state.status = 'ready';
+            this.log(
+              'host',
+              'Runtime initialized',
+              'The SDK initialization handshake completed; input can be queued before the first system/init stream event.',
+            );
+          }
+        })
+        .catch(async (error: unknown) => {
+          if (!this.finishing) {
+            this.log(
+              'error',
+              'Initialization failed',
+              error instanceof Error ? error.message : 'Runtime initialization failed.',
+            );
+            await this.close('error');
+          }
+        });
   }
   snapshot(): Snapshot {
     return structuredClone(this.state);
@@ -119,7 +141,8 @@ export class Session {
     } else {
       const raw = message as unknown as Record<string, unknown>;
       const subtype = typeof raw.subtype === 'string' ? raw.subtype : '';
-      if (message.type === 'system' && subtype === 'init') this.state.status = 'ready';
+      if (message.type === 'system' && subtype === 'init' && this.state.status === 'starting')
+        this.state.status = 'ready';
       const content = object(raw.message).content;
       const text =
         typeof content === 'string'
