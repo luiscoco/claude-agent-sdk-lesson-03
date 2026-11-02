@@ -1,0 +1,294 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#f4f7f7" />
+    <title>Lesson 03 · Query Control Room</title>
+    <link rel="icon" type="image/svg+xml" href="/icon.svg" />
+  </head>
+  <body>
+    <header class="topbar">
+      <a class="brand" href="/"
+        ><span class="brand-icon">{ }</span
+        ><span>Query Control Room<small>LESSON 03</small></span></a
+      >
+      <div class="top-links">
+        <span class="version">SDK 0.3.310</span
+        ><a href="https://github.com/luiscoco/claude-agent-sdk-lesson-03">View source ↗</a>
+      </div>
+    </header>
+    <main>
+      <section class="hero">
+        <div>
+          <p class="eyebrow">QUERY HANDLES &amp; RUNTIME METHODS</p>
+          <h1>One handle.<br /><span>A session you control.</span></h1>
+          <p class="intro">
+            Watch the messages. Inspect the runtime. Change what comes next.<br class="desktop" />
+            Then close the session deliberately.
+          </p>
+          <div class="hero-badges">
+            <span class="pill">● Interactive lifecycle lab</span
+            ><span>Claude Agent SDK · TypeScript 0.3.310</span>
+          </div>
+        </div>
+        <aside class="lesson-card">
+          <strong>03<span> / 09</span></strong>
+          <h2>Observe. Control. Clean up.</h2>
+          <p>A turn can finish while the<br />session stays open.</p>
+          <hr />
+          <small>A course companion by<br /><b>Luis Coco Enríquez</b></small>
+        </aside>
+      </section>
+      <nav class="tabs" role="tablist" aria-label="Lesson activities">
+        <button role="tab" aria-selected="true" aria-controls="room" id="tab-room">
+          01 <span>Control room</span></button
+        ><button
+          role="tab"
+          aria-selected="false"
+          aria-controls="guide"
+          id="tab-guide"
+          tabindex="-1"
+        >
+          02 <span>Runtime guide</span></button
+        ><button role="tab" aria-selected="false" aria-controls="quiz" id="tab-quiz" tabindex="-1">
+          03 <span>Check your understanding</span>
+        </button>
+      </nav>
+      <div id="notice" role="alert" hidden></div>
+      <section id="room" role="tabpanel" aria-labelledby="tab-room">
+        <div class="lifecycle" aria-label="Session lifecycle">
+          <div data-stage="create">
+            <b>1</b><span>Retain q<small>Create one handle</small></span>
+          </div>
+          <i>→</i>
+          <div data-stage="observe">
+            <b>2</b><span>Observe<small>Read typed messages</small></span>
+          </div>
+          <i>→</i>
+          <div data-stage="control">
+            <b>3</b><span>Control<small>Inspect &amp; change</small></span>
+          </div>
+          <i>→</i>
+          <div data-stage="close">
+            <b>4</b><span>Close<small>Release resources</small></span>
+          </div>
+        </div>
+        <div class="mode-banner">
+          <div>
+            <strong id="mode-label">Practice mode · scripted adapter</strong>
+            <p id="mode-explanation">
+              No Claude process or API call runs. Events, usage, and control responses are teaching
+              fixtures.
+            </p>
+          </div>
+          <span class="tag" id="mode-tag">NO API KEY NEEDED</span>
+        </div>
+        <div class="workbench">
+          <aside class="panel controls">
+            <p class="eyebrow muted">THE HOST APPLICATION</p>
+            <h2>Keep the handle</h2>
+            <label for="mode">Session mode</label
+            ><select id="mode">
+              <option value="practice">Practice · scripted fixture</option>
+              <option value="live">Live · real SDK / model charges</option>
+            </select>
+            <p id="live-note" class="hint">Checking live availability…</p>
+            <button class="primary" id="create">Create a query handle <span>→</span></button
+            ><code class="tiny-code">const q = query({ prompt: input, options });</code>
+            <div class="control-group">
+              <label for="prompt">Next user turn</label
+              ><textarea id="prompt" rows="4">
+Explain why a host should retain the query handle, inspect messages, and close the session.</textarea
+              ><button id="send" class="secondary" disabled>Send a turn</button>
+              <p class="hint">
+                Input stays open across turns. Wait for initialization before sending.
+              </p>
+            </div>
+            <div class="control-group">
+              <h3>Inspect the same session</h3>
+              <div class="button-grid">
+                <button data-command="mcp-status" disabled>MCP status</button
+                ><button data-command="agents" disabled>Available agents</button
+                ><button data-command="context" disabled>Context usage</button
+                ><button data-command="usage" disabled>Result usage</button>
+              </div>
+            </div>
+            <details id="runtime-controls">
+              <summary>Change the runtime</summary>
+              <div class="button-grid">
+                <button data-command="attach-mcp" disabled>Attach course MCP</button
+                ><button data-command="detach-mcp" disabled>Remove course MCP</button>
+              </div>
+              <label for="model">Model for subsequent responses</label
+              ><input id="model" placeholder="Enter an available model ID" /><button
+                id="set-model"
+                disabled
+              >
+                Apply model
+              </button>
+              <p class="hint">
+                Use a provider-supported ID in live mode. Practice accepts a fictional ID.
+              </p>
+              <button data-command="reload-plugins" disabled>Reload plugins</button>
+              <p class="hint">
+                Requests holdOnCacheImpact. A held reload is reported without forcing it.
+              </p>
+            </details>
+            <button id="close" class="danger" disabled>Close the session</button>
+            <p class="hint">
+              Closes q once, releases input and timers, and disposes the host-owned MCP server.
+              Sessions expire after 10 minutes.
+            </p>
+          </aside>
+          <div class="observation">
+            <section class="panel monitor">
+              <div class="panel-heading">
+                <div>
+                  <p class="eyebrow muted">THE RETAINED QUERY</p>
+                  <h2>Session monitor</h2>
+                </div>
+                <span id="status" class="status">No handle</span>
+              </div>
+              <div class="handle-id">
+                <code id="handle-id">q · not created</code><span id="model-current">—</span>
+              </div>
+              <div class="metrics">
+                <div><strong id="messages">0</strong><span>messages</span></div>
+                <div><strong id="turns">0</strong><span>turn results</span></div>
+                <div><strong id="closes">0</strong><span>close() calls</span></div>
+              </div>
+              <div class="result-box">
+                <p class="eyebrow">LATEST TURN RESULT</p>
+                <p id="result">Create a handle and send a turn to observe its result.</p>
+                <p id="result-note" class="hint">
+                  A result reports the turn’s outcome. It is separate from closing the session.
+                </p>
+              </div>
+            </section>
+            <section class="panel stream">
+              <div class="panel-heading">
+                <div>
+                  <p class="eyebrow muted">OBSERVATION ≠ CONTROL</p>
+                  <h2>Session event log</h2>
+                </div>
+                <button id="export" class="text-button" disabled>Export trace ↓</button>
+              </div>
+              <div class="log-legend">
+                <span>● Messages</span><span>● Controls</span><span>● Host lifecycle</span>
+              </div>
+              <div id="events" aria-label="Session events">
+                <div class="empty">
+                  <span>↳</span>
+                  <h3>Your session starts here</h3>
+                  <p>
+                    Create q, then observe messages and control calls<br />on the same retained
+                    handle.
+                  </p>
+                </div>
+              </div>
+              <p class="stream-footer">
+                Last 100 selected-field events. Full SDK envelopes and the server environment are
+                not sent to the browser.
+              </p>
+            </section>
+            <section class="panel usage-panel">
+              <div class="panel-heading">
+                <div>
+                  <p class="eyebrow muted">USAGE IS NOT CLEANUP</p>
+                  <h2>Latest usage snapshot</h2>
+                </div>
+                <span id="usage-label" class="tag">Awaiting a result</span>
+              </div>
+              <div class="usage-values">
+                <div><b id="cost">—</b><span>reported cumulative cost</span></div>
+                <div><b id="tokens">—</b><span>main-loop tokens · this turn</span></div>
+              </div>
+              <p class="hint">
+                Read the latest <code>total_cost_usd</code> and <code>modelUsage</code>; do not sum
+                cumulative snapshots. <code>usage</code> covers the main-loop turn. Context usage
+                answers a different question.
+              </p>
+              <details>
+                <summary>Inspect the usage fields</summary>
+                <pre id="usage-json">No result yet.</pre>
+              </details>
+            </section>
+          </div>
+        </div>
+      </section>
+      <section id="guide" role="tabpanel" aria-labelledby="tab-guide" hidden>
+        <div class="section-intro">
+          <p class="eyebrow">A HOST LIFECYCLE YOU CAN EXPLAIN</p>
+          <h2>Observation and control have different jobs.</h2>
+          <p>
+            The runtime guide matches the installed 0.3.310 type declarations. Practice implements a
+            small scripted adapter; live mode forwards these controls to the real query handle.
+          </p>
+        </div>
+        <div id="method-cards" class="method-cards"></div>
+        <div class="guide-grid">
+          <article class="panel">
+            <h3>Read the actual host pattern</h3>
+            <pre><code>const input = new InputQueue&lt;SDKUserMessage&gt;();
+const q = query({ prompt: input, options });
+
+try {
+  for await (const msg of q) {
+    if (msg.type === 'result') {
+      // Replace the latest usage snapshot.
+      latestUsage = msg.modelUsage;
+    }
+  }
+} finally {
+  q.close();
+  input.close();
+}</code></pre>
+            <p class="hint">
+              Runtime controls use q while the stream consumer remains active. See
+              src/server/session.ts for this app’s error, timeout, and cleanup handling.
+            </p>
+          </article>
+          <article class="panel">
+            <h3>A version-specific correction</h3>
+            <p id="usage-correction"></p>
+            <p>
+              Connection health and permission are separate. Agent discovery and agent execution are
+              separate. Reading usage and closing resources are separate.
+            </p>
+            <p>
+              The model change applies to subsequent responses. This lab waits between turns before
+              changing runtime configuration.
+            </p>
+            <a
+              href="https://github.com/luiscoco/claude-agent-sdk-lesson-03/blob/main/docs/lesson-3-walkthrough.md"
+              >Open the classroom walkthrough ↗</a
+            >
+          </article>
+        </div>
+      </section>
+      <section id="quiz" role="tabpanel" aria-labelledby="tab-quiz" hidden>
+        <div class="section-intro">
+          <p class="eyebrow">CHECK YOUR UNDERSTANDING</p>
+          <h2>Can you explain the lifecycle?</h2>
+          <p>Try the control room first, then check these four concepts.</p>
+        </div>
+        <form id="quiz-form">
+          <div id="questions"></div>
+          <button class="primary" type="submit">Check my answers</button>
+          <p id="quiz-score" role="status"></p>
+        </form>
+      </section>
+    </main>
+    <footer>
+      <span>Lesson 3 · Query Handles and Runtime Methods</span
+      ><span
+        >Luis Coco Enríquez · MIT licensed ·
+        <a href="https://github.com/luiscoco/claude-agent-sdk-lesson-02"
+          >Lesson 2 companion ↗</a
+        ></span
+      >
+    </footer>
+    <script type="module" src="/src/client/main.ts"></script>
+  </body>
+</html>

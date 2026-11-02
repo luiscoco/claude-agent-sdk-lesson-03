@@ -1,0 +1,1 @@
+This inert workspace belongs to the Lesson 3 teaching application. Live queries disable built-in tools, project/user settings and session persistence. The bundled custom MCP tool only returns course notes.
