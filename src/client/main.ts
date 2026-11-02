@@ -1,6 +1,7 @@
 import './style.css';
 import './course-theme.css';
 import './course-theme.js';
+import { observeCode } from './highlight.js';
 import { renderMarkdown } from './markdown.js';
 import { QUIZ, type Command, type Metadata, type Snapshot } from '../shared/lesson.js';
 const $ = <T extends HTMLElement = HTMLElement>(id: string) => document.getElementById(id) as T;
@@ -9,6 +10,7 @@ let pending = false;
 let pollPending = false;
 let generation = 0;
 let renderedResult: string | undefined;
+observeCode();
 const commandButtons = [...document.querySelectorAll<HTMLButtonElement>('[data-command]')];
 const text = (id: string, value: string) => {
   $(id).textContent = value;
