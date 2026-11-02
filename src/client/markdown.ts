@@ -39,7 +39,7 @@ function inline(source: string): (Node | string)[] {
 const lineBroken = (lines: string[]) =>
   lines.flatMap((line, n) => (n ? [el('br'), ...inline(line)] : inline(line)));
 
-const BULLET =/^\s*[-*+]\s+(.*)$/;
+const BULLET = /^\s*[-*+]\s+(.*)$/;
 const ORDERED = /^\s*\d+[.)]\s+(.*)$/;
 const HEADING = /^(#{1,6})\s+(.*?)\s*#*\s*$/;
 const FENCE = /^\s*(```|~~~)/;
